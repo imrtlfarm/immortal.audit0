@@ -6,7 +6,7 @@ The share token referenced in eqv.sol is here: https://github.com/OpenZeppelin/o
 In order to set up the contracts correctly you must do the following:
 1. Deploy MultiVault from eqv.sol
 2. Deploy ERC20PresetMinterPauser
-3. call declarShareAddress with the share address
+3. call declareShareAddress with the share address
 4. grant the MultiVault a Minter Role
 5. Deposit exactly 1 FTM into the contract as the initial deposit (in the live version, the wallet that does the initial deposit will have its private key burned so that it can never be withdrawn).
 6. Now the contract is ready to go.
