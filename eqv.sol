@@ -65,7 +65,6 @@ contract MultiVault {
     uint256 public lastTVL;
     
     bool firstShare = true;
-    uint256 public lastLPP;
     uint256 public minRatio;
     
     //IPancakeFactory public factory;
