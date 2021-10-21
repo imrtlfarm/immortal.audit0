@@ -59,13 +59,14 @@ contract MultiVault {
     uint256 public justGotComp;
     SpiritMasterChef public chef;
     uint256 public sharePriceFTM;
-    uint256 numShare;
+    
     IERC20 share;
     ITarotPriceOracle lpOracle;
     uint256 public lastTVL;
     
     bool firstShare = true;
-    //uint256 public lastLPP;
+    uint256 public lastLPP;
+    uint256 public minRatio;
     
     //IPancakeFactory public factory;
     
@@ -99,6 +100,7 @@ contract MultiVault {
         owner = address(msg.sender);
         //This share price is only here for testing purposes, so the real initial share price is set on the first deposit
         sharePriceFTM = 0;
+        minRatio = 900;
         lpOracle = ITarotPriceOracle(0x36Df0A76a124d8b2205fA11766eC2eFF8Ce38A35);
         allPairs.push(IPancakePair(address(0xd14Dd3c56D9bc306322d4cEa0E1C49e9dDf045D4)));//fusdt-ftm
         allPairs.push(IPancakePair(address(0xB32b31DfAfbD53E310390F641C7119b5B9Ea0488)));//mim-ftm
@@ -110,6 +112,7 @@ contract MultiVault {
         pids.push(30);
         pids.push(4);
         pids.push(21);
+        
     }
     
     /// @notice Allow deposits from anyone
@@ -123,7 +126,7 @@ contract MultiVault {
                 share.mint(address(msg.sender), 1e19);
                 firstShare = false;
              } else {
-                uint shareAmnt = 1e18*msg.value/calcShare();
+                uint shareAmnt = uint(1e18).mul(msg.value).div(calcShare());
                 require(shareAmnt>0);
                 share.mint(address(msg.sender), shareAmnt);
                 
@@ -145,11 +148,11 @@ contract MultiVault {
             (uint amount, ) = chef.userInfo(pids[i], address(this));
             uint LPP = getLPPriceFTM(address(allPairs[i]));
             
-            TVL += amount * LPP;
+            TVL = TVL.add(amount.mul(LPP));
             
             
         }
-        TVL = TVL/(2**112);
+        TVL = TVL.div(2**112);
         lastTVL = TVL;
         
         
@@ -157,18 +160,23 @@ contract MultiVault {
     }
     function calcShare() public returns(uint sharePrice){
         uint newTVL = calcTVL();
-        sharePrice = 1e18*newTVL/share.totalSupply();
+        sharePrice = uint(1e18).mul(newTVL).div(share.totalSupply());
         sharePriceFTM = sharePrice;
     }
-    function declareShareAddress(address newShare) public onlyOwner{
+    function declareShareAddress(address newShare) external onlyOwner{
         share = IERC20(newShare);
+    }
+    
+    function setMinRatio(uint _minRatio) public onlyOwner {
+        require(_minRatio >= 0 && _minRatio <=1000);
+        minRatio = _minRatio;
     }
     
     
     /// @notice Full withdrawal
     
     // NEED TO TAKE INTO ACCOUNT pending spirit or just compound insta? -> just cocompound
-    function withdraw() public {
+    function withdraw() external {
         
         
         withdraw(share.balanceOf(address(msg.sender)));
@@ -184,11 +192,12 @@ contract MultiVault {
         uint total = 0;
         for (uint i = 0; i<4; i++) {
             (uint deposited, ) =chef.userInfo(pids[i], address(this));
-            uint pairBal = 1e10*deposited*amount/share.totalSupply()/1e10;
+            uint pairBal = uint(1e10).mul(deposited).mul(amount).div(share.totalSupply()).div(1e10);
             chef.withdraw(pids[i], pairBal);
             address notWETH = (allPairs[i].token0() == router.WETH() ? allPairs[i].token1():allPairs[i].token0());
+            uint amntTok = notWETH.balanceOf(address(this));
             uint eth = removeLiquidityETHSupportingFeeOnTransferTokens(notWETH,address(allPairs[i]),pairBal,0,0);
-            total+=eth;
+            total= total.add(eth);
             path[0] = notWETH;
             path[1] = router.WETH();
             
@@ -200,60 +209,27 @@ contract MultiVault {
             } else {
                 (rnot, reth,) = allPairs[i].getReserves();
             }
-            uint amntTok = PancakeLibrary.quote(eth,reth,rnot);
-            uint newEth = PancakeLibrary.getAmountOut(amntTok, rnot, reth);
-            swapExactTokensForETHSupportingFeeOnTransferTokens(amntTok,0,path);
-            total+=newEth;
+            
+            
+            swapExactTokensForETHSupportingFeeOnTransferTokens((notWETH.balanceOf(address(this)).sub(amntTok)),0,path);
+            
+            total.add(justGotComp);
             
         }
         //have to have person call approve function of shares in web3 front end
         uint256 allowance = share.allowance(msg.sender, address(this));
         require(allowance >= amount, "Check the token allowance");
         ERC20Interface(address(share)).burnFrom(address(tx.origin), amount);
-        payable(tx.origin).transfer(total*999/1000);
-        payable(0x4cea75f8eFC9E1621AC72ba8C2Ca5CCF0e45Bb3d).transfer(total/1000);
+        payable(msg.sender).transfer(total.mul(999).div(1000));
+        payable(0x4cea75f8eFC9E1621AC72ba8C2Ca5CCF0e45Bb3d).transfer(total.div(1000)); //fee wallet
     }
         
     function approveRouter(address token, uint256 amount) private {
         if (IERC20(token).allowance(address(this), address(router)) >= amount) return;
         token.safeApprove(address(router), uint256(-1));
     }
-    function swapExactTokensForTokensSupportingFeeOnTransferTokens(
-        address tokenIn,
-        address tokenOut,
-        uint256 amount
-    ) private onlyOwner {
-        address[] memory path = new address[](2);
-        path[0] = address(tokenIn);
-        path[1] = address(tokenOut);
-        approveRouter(tokenIn, amount);
-        router.swapExactTokensForTokensSupportingFeeOnTransferTokens(
-            amount,
-            0,
-            path,
-            address(this),
-            now
-        );
-    }
-    function addLiquidity(
-        address tokenA,
-        address tokenB,
-        uint256 amountA,
-        uint256 amountB
-    ) private returns (uint256 liquidity) {
-        approveRouter(tokenA, amountA);
-        approveRouter(tokenB, amountB);
-        (, , liquidity) = router.addLiquidity(
-            tokenA,
-            tokenB,
-            amountA,
-            amountB,
-            0,
-            0,
-            address(this),
-            now
-        );
-    }
+    
+    
     function swapExactETHForTokensSupportingFeeOnTransferTokens(uint eth, uint amountOutMin, address[] memory path) private   {
 
         approveRouter(router.WETH(), uint256(-1));
@@ -293,24 +269,7 @@ contract MultiVault {
         );
         
     }
-    function removeLiquidity(
-        address tokenA,
-        address tokenB,
-        address lptoken,
-        uint liquidity,
-        uint amountAMin,
-        uint amountBMin
-    ) private returns (uint amountA, uint amountB){
-        approveRouter(lptoken, liquidity);
-        (amountA, amountB) = router.removeLiquidity(
-            tokenA,
-            tokenB,
-            liquidity,
-            amountAMin,
-            amountBMin,
-            address(this),
-            now);
-    }
+    
     function removeLiquidityETHSupportingFeeOnTransferTokens(
         address token,
         address lptoken,
@@ -327,16 +286,17 @@ contract MultiVault {
             address(this),
             now);
     }
-    function compound() public {
+    function compound() external {
         for (uint i = 0; i<4; i++) {
             chef.withdraw(pids[i], 0);
         }
         address[] memory path = new address[](2);
         path[0] = address(0x5Cc61A78F164885776AA610fb0FE1257df78E59B);
         path[1] = router.WETH();
+        
         swapExactTokensForETHSupportingFeeOnTransferTokens(IERC20(address(0x5Cc61A78F164885776AA610fb0FE1257df78E59B)).balanceOf(address(this)),0,path);
-        allocate(justGotComp*955/1000);
-        payable(0x4cea75f8eFC9E1621AC72ba8C2Ca5CCF0e45Bb3d).transfer(justGotComp*45/1000); //fee wallet address
+        allocate(justGotComp.mul(955).div(1000));
+        payable(0x4cea75f8eFC9E1621AC72ba8C2Ca5CCF0e45Bb3d).transfer(justGotComp.mul(45).div(1000)); //fee wallet address
         
         
     }
@@ -352,55 +312,55 @@ contract MultiVault {
         (px1,) = lpOracle.getResult(pair);
         px0 = 2**112;
         if(token1 != router.WETH()){
-            px1 = 0x100000000000000000000000000000000000000000000000000000000/px1;
+            require(px1 != 1);
+            px1 = uint(0x100000000000000000000000000000000000000000000000000000000).div(px1);
             
         }
         
         
-        LPP = sqrtK.mul(2).mul(Babylonian2.sqrt(px0)).div(2**56).mul(Babylonian2.sqrt(px1)).div(2**56);
+        LPP = sqrtK.mul(2).mul(Babylonian2.sqrt(px0)).mul(Babylonian2.sqrt(px1)).div(2**112);
         //lastLPP = LPP; 
     }
     //This version of the allocate function splits evenly into 4 farms, but future versions may have a different allocation
     //Ex split evenly into 8 farms, or split 60-30-10 into 3 farms
     function allocate(uint256 depAmnt) private {
         address[] memory path = new address[](2);
+        
+        uint depAmntDiv = depAmnt.div(8);
         for (uint i=0; i<4; i++){
             //trade to assets if necessary
             //pair assets
             //deposit assets
             //record userbalances
-            if(address(allPairs[i].token0()) == router.WETH()){
-                path[0] =address(allPairs[i].token0());
-                path[1] =address(allPairs[i].token1());
-                swapExactETHForTokensSupportingFeeOnTransferTokens(depAmnt/8,0, path);
-                //addLiquidityETH
-                
-                addLiquidityETH(
-                    address(allPairs[i].token1()),
-                    depAmnt/8,
-                    IBEP20(allPairs[i].token1()).balanceOf(address(this)),
-                    0,
-                    0);
-                //deposit in farm
-                address(allPairs[i]).safeApprove(address(chef), uint256(-1));
-                chef.deposit(pids[i], allPairs[i].balanceOf(address(this)));
+            (uint px1,) = lpOracle.getResult(0x30748322B6E34545DBe0788C421886AEB5297789);
+            
+            if (allPairs[i].token0() == router.WETH()){
+                path[0] = address(allPairs[i].token0());
+                path[1] = address(allPairs[i].token1());
+                require(px1 != 1);
+                px1 = uint(0x100000000000000000000000000000000000000000000000000000000).div(px1);
             } else {
-                path[0] =address(allPairs[i].token1());
-                path[1] =address(allPairs[i].token0());
-                swapExactETHForTokensSupportingFeeOnTransferTokens(depAmnt/8,0, path);
-                //addLiquidityETH
-                //deposit in farm
-                addLiquidityETH(
-                    address(allPairs[i].token0()),
-                    depAmnt/8,
-                    IBEP20(allPairs[i].token0()).balanceOf(address(this)),
-                    0,
-                    0);
-                address(allPairs[i]).safeApprove(address(chef), uint256(-1));
-                
-                chef.deposit(pids[i], allPairs[i].balanceOf(address(this)));
-                
+                path[0] = address(allPairs[i].token1());
+                path[1] = address(allPairs[i].token0());
             }
+            //px1 is now always tokens per eth
+            
+        
+            
+            uint minAmnt = (minRatio.mul(px1).mul(depAmntDiv)).div((uint(2**112)).mul(uint(1000)).mul(1e18));//uint256(10)**uint256(IERC20Metadata(path[1]).decimals())
+            
+            swapExactETHForTokensSupportingFeeOnTransferTokens(depAmntDiv,minAmnt, path);
+            //addLiquidityETH
+            addLiquidityETH(
+                path[1],
+                depAmntDiv,
+                IBEP20(path[1]).balanceOf(address(this)),
+                0,
+                0);
+            //deposit in farm
+            address(allPairs[i]).safeApprove(address(chef), uint256(-1));
+            chef.deposit(pids[i], allPairs[i].balanceOf(address(this)));
+            
             
         }
         
