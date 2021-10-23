@@ -45,12 +45,14 @@ library SafeToken {
 }
 
 contract MultiVault {
-    //mappin private owners;
+    
     using SafeToken for address;
     using SafeMath for uint256;
     address public owner;
     
-    //cur+target no duplicates
+    mapping(address => uint256) public coolDowns;
+    uint coolDownTime;
+    
     IPancakePair[] public allPairs; 
     
     uint[] public pids;
@@ -67,10 +69,7 @@ contract MultiVault {
     bool firstShare = true;
     uint256 public minRatio;
     
-    //IPancakeFactory public factory;
     
-    //some multiplier that indicates what percent of TVL of spirit that this fund is
-    //uint256 public fundValFTM;
     /// @notice Only the owner can withdraw from this contract
     modifier onlyOwner() {
         require(msg.sender == owner || msg.sender == address(this));
@@ -100,6 +99,7 @@ contract MultiVault {
         //This share price is only here for testing purposes, so the real initial share price is set on the first deposit
         sharePriceFTM = 0;
         minRatio = 900;
+        coolDownTime = 1320; //seconds
         lpOracle = ITarotPriceOracle(0x36Df0A76a124d8b2205fA11766eC2eFF8Ce38A35);
         allPairs.push(IPancakePair(address(0xd14Dd3c56D9bc306322d4cEa0E1C49e9dDf045D4)));//fusdt-ftm
         allPairs.push(IPancakePair(address(0xB32b31DfAfbD53E310390F641C7119b5B9Ea0488)));//mim-ftm
@@ -131,6 +131,7 @@ contract MultiVault {
                 
              }
              allocate(msg.value);
+             coolDowns[msg.sender] = now;
          } else {
              justGotComp = msg.value;
          }
@@ -170,6 +171,10 @@ contract MultiVault {
         require(_minRatio >= 0 && _minRatio <=1000);
         minRatio = _minRatio;
     }
+    function setCoolDown(uint _cd) public onlyOwner {
+        require(_cd <=86400);
+        coolDownTime = _cd;
+    }
     
     
     /// @notice Full withdrawal
@@ -186,6 +191,8 @@ contract MultiVault {
     
     
     function withdraw(uint256 amount) public {
+        require(now - coolDowns[msg.sender] >= coolDownTime, "Wait 22 minutes after depositing before you can withdraw");
+        
         address[] memory path = new address[](2);
         
         uint total = 0;
