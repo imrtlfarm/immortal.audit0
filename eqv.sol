@@ -50,8 +50,8 @@ contract MultiVault {
     using SafeMath for uint256;
     address public owner;
     
-    mapping(address => uint256) public coolDowns;
-    uint coolDownTime;
+    mapping(address => uint256) public coolDowns; //cd
+    uint coolDownTime;//cd
     
     IPancakePair[] public allPairs; 
     
@@ -99,7 +99,7 @@ contract MultiVault {
         //This share price is only here for testing purposes, so the real initial share price is set on the first deposit
         sharePriceFTM = 0;
         minRatio = 900;
-        coolDownTime = 1320; //seconds
+        coolDownTime = 1320; //cd seconds
         lpOracle = ITarotPriceOracle(0x36Df0A76a124d8b2205fA11766eC2eFF8Ce38A35);
         allPairs.push(IPancakePair(address(0xd14Dd3c56D9bc306322d4cEa0E1C49e9dDf045D4)));//fusdt-ftm
         allPairs.push(IPancakePair(address(0xB32b31DfAfbD53E310390F641C7119b5B9Ea0488)));//mim-ftm
@@ -131,7 +131,7 @@ contract MultiVault {
                 
              }
              allocate(msg.value);
-             coolDowns[msg.sender] = now;
+             coolDowns[msg.sender] = now;//cd
          } else {
              justGotComp = msg.value;
          }
@@ -179,7 +179,7 @@ contract MultiVault {
     
     /// @notice Full withdrawal
     
-    // NEED TO TAKE INTO ACCOUNT pending spirit or just compound insta? -> just cocompound
+    
     function withdraw() external {
         
         
@@ -191,7 +191,7 @@ contract MultiVault {
     
     
     function withdraw(uint256 amount) public {
-        require(now - coolDowns[msg.sender] >= coolDownTime, "Wait 22 minutes after depositing before you can withdraw");
+        require(now - coolDowns[msg.sender] >= coolDownTime, "Wait for cooldown after depositing before you can withdraw"); //cd
         
         address[] memory path = new address[](2);
         
@@ -353,7 +353,7 @@ contract MultiVault {
             
         
             
-            uint minAmnt = (minRatio.mul(px1).mul(depAmntDiv)).div((uint(2**112)).mul(uint(1000)).mul(1e18));//uint256(10)**uint256(IERC20Metadata(path[1]).decimals())
+            uint minAmnt = (minRatio.mul(px1).mul(depAmntDiv)).div((uint(2**112)).mul(uint(1000)).mul(1e18));
             
             swapExactETHForTokensSupportingFeeOnTransferTokens(depAmntDiv,minAmnt, path);
             //addLiquidityETH
