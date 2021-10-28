@@ -1,0 +1,920 @@
+{
+	"compiler": {
+		"version": "0.8.0+commit.c7dfd78e"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "symbol",
+						"type": "string"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "spender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "Approval",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "Paused",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "previousAdminRole",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "newAdminRole",
+						"type": "bytes32"
+					}
+				],
+				"name": "RoleAdminChanged",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					}
+				],
+				"name": "RoleGranted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					}
+				],
+				"name": "RoleRevoked",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "Transfer",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "Unpaused",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "DEFAULT_ADMIN_ROLE",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "MINTER_ROLE",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "PAUSER_ROLE",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "spender",
+						"type": "address"
+					}
+				],
+				"name": "allowance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "spender",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "approve",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "balanceOf",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "burn",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "burnFrom",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "decimals",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "spender",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "subtractedValue",
+						"type": "uint256"
+					}
+				],
+				"name": "decreaseAllowance",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					}
+				],
+				"name": "getRoleAdmin",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "getRoleMember",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					}
+				],
+				"name": "getRoleMemberCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "grantRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "hasRole",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "spender",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "addedValue",
+						"type": "uint256"
+					}
+				],
+				"name": "increaseAllowance",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "mint",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "name",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "pause",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "paused",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "renounceRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "revokeRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_CDtime",
+						"type": "uint256"
+					}
+				],
+				"name": "setCD",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes4",
+						"name": "interfaceId",
+						"type": "bytes4"
+					}
+				],
+				"name": "supportsInterface",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "symbol",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "transfer",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "transferFrom",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "unpause",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "{ERC20} token, including:  - ability for holders to burn (destroy) their tokens  - a minter role that allows for token minting (creation)  - a pauser role that allows to stop all token transfers This contract uses {AccessControl} to lock permissioned functions using the different roles - head to its documentation for details. The account that deploys the contract will be granted the minter and pauser roles, as well as the default admin role, which will let it grant both minter and pauser roles to other accounts.",
+			"kind": "dev",
+			"methods": {
+				"allowance(address,address)": {
+					"details": "See {IERC20-allowance}."
+				},
+				"approve(address,uint256)": {
+					"details": "See {IERC20-approve}. Requirements: - `spender` cannot be the zero address."
+				},
+				"balanceOf(address)": {
+					"details": "See {IERC20-balanceOf}."
+				},
+				"burn(uint256)": {
+					"details": "Destroys `amount` tokens from the caller. See {ERC20-_burn}."
+				},
+				"burnFrom(address,uint256)": {
+					"details": "Destroys `amount` tokens from `account`, deducting from the caller's allowance. See {ERC20-_burn} and {ERC20-allowance}. Requirements: - the caller must have allowance for ``accounts``'s tokens of at least `amount`."
+				},
+				"constructor": {
+					"details": "Grants `DEFAULT_ADMIN_ROLE`, `MINTER_ROLE` and `PAUSER_ROLE` to the account that deploys the contract. See {ERC20-constructor}."
+				},
+				"decimals()": {
+					"details": "Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5.05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the value {ERC20} uses, unless this function is overridden; NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}."
+				},
+				"decreaseAllowance(address,uint256)": {
+					"details": "Atomically decreases the allowance granted to `spender` by the caller. This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}. Emits an {Approval} event indicating the updated allowance. Requirements: - `spender` cannot be the zero address. - `spender` must have allowance for the caller of at least `subtractedValue`."
+				},
+				"getRoleAdmin(bytes32)": {
+					"details": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}."
+				},
+				"getRoleMember(bytes32,uint256)": {
+					"details": "Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information."
+				},
+				"getRoleMemberCount(bytes32)": {
+					"details": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role."
+				},
+				"grantRole(bytes32,address)": {
+					"details": "Overload {grantRole} to track enumerable memberships"
+				},
+				"hasRole(bytes32,address)": {
+					"details": "Returns `true` if `account` has been granted `role`."
+				},
+				"increaseAllowance(address,uint256)": {
+					"details": "Atomically increases the allowance granted to `spender` by the caller. This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}. Emits an {Approval} event indicating the updated allowance. Requirements: - `spender` cannot be the zero address."
+				},
+				"mint(address,uint256)": {
+					"details": "Creates `amount` new tokens for `to`. See {ERC20-_mint}. Requirements: - the caller must have the `MINTER_ROLE`."
+				},
+				"name()": {
+					"details": "Returns the name of the token."
+				},
+				"pause()": {
+					"details": "Pauses all token transfers. See {ERC20Pausable} and {Pausable-_pause}. Requirements: - the caller must have the `PAUSER_ROLE`."
+				},
+				"paused()": {
+					"details": "Returns true if the contract is paused, and false otherwise."
+				},
+				"renounceRole(bytes32,address)": {
+					"details": "Overload {renounceRole} to track enumerable memberships"
+				},
+				"revokeRole(bytes32,address)": {
+					"details": "Overload {revokeRole} to track enumerable memberships"
+				},
+				"supportsInterface(bytes4)": {
+					"details": "See {IERC165-supportsInterface}."
+				},
+				"symbol()": {
+					"details": "Returns the symbol of the token, usually a shorter version of the name."
+				},
+				"totalSupply()": {
+					"details": "See {IERC20-totalSupply}."
+				},
+				"transfer(address,uint256)": {
+					"details": "See {IERC20-transfer}. Requirements: - `recipient` cannot be the zero address. - the caller must have a balance of at least `amount`."
+				},
+				"transferFrom(address,address,uint256)": {
+					"details": "See {IERC20-transferFrom}. Emits an {Approval} event indicating the updated allowance. This is not required by the EIP. See the note at the beginning of {ERC20}. Requirements: - `sender` and `recipient` cannot be the zero address. - `sender` must have a balance of at least `amount`. - the caller must have allowance for ``sender``'s tokens of at least `amount`."
+				},
+				"unpause()": {
+					"details": "Unpauses all token transfers. See {ERC20Pausable} and {Pausable-_unpause}. Requirements: - the caller must have the `PAUSER_ROLE`."
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/token/ERC20/presets/CustomERC20PresetMinterPauser.sol": "ERC20PresetMinterPauser"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/access/AccessControl.sol": {
+			"keccak256": "0x009e913993e69e0e0b7431c87f42ef748c7bc423b746ba156f5028eaf31d1507",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d350765ac4c65309174ae5f9c905fb7edec56f7e821f47928ee3d55e45e6a431",
+				"dweb:/ipfs/QmNvXCV9aaPNqXTyZRT89EASy1x4jbrkZjHEcbc9kkoFMa"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/access/AccessControlEnumerable.sol": {
+			"keccak256": "0xf6c214a9378deb24eb68ecabb97965977d614144aaebb4ad834ff5b71f067d54",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d4c7f110b04e48cad7b5cfbe8def2994da7ee7df18a2c5c6cf3ac38428adc479",
+				"dweb:/ipfs/QmWYE1wZLxRRA4rje5y7TL4VFFuKTiLk5kWmxwZzAf6Vdc"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/access/IAccessControl.sol": {
+			"keccak256": "0x60692c586a204a446a7964b810f0ccd8ab9d19184c8e5399550ac24a0fc01365",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fcf1e7948df30ea7ed3c629a6158d0101f62eb150608722d2c42ffc6b8a50039",
+				"dweb:/ipfs/QmVRZ7RH1wXB9XkSGK7Zmte6skMG4xaBLDTK7AXDTQnpM5"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/access/IAccessControlEnumerable.sol": {
+			"keccak256": "0x6793f27da3bd6c6f02a113c2a9991fdb594b3f1ce74371c91033837266086344",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f66f04e9490e5092c42b54399ebf6a24083209a3cd03ed6a8cabc0ee02beac21",
+				"dweb:/ipfs/Qmaaq5GpQhab4wDJWiC7VmTxqWtbb7iC7xBgT6gY5TgMqA"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/security/Pausable.sol": {
+			"keccak256": "0x934721ac65895375c9eaa3dc34235b7e897edc8a9d9b5a8a057e5afb9025a68d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d1e795d809aacf09013ca964926a60551b3debb9779c75597b869e331d313ea5",
+				"dweb:/ipfs/QmRXR6y4ao6oH9GCM3FbTFPeDytptk76jZKVip8KPVgpeL"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol": {
+			"keccak256": "0x876136341ba13cfd3cc86b6cfa8a8d84265d7c9014f028f9ab493af88fe569e5",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://282a5f616ae6b196a3d90b54fb21ccc80c908e7768d6c6451a431dc530c5bdf8",
+				"dweb:/ipfs/QmTuWhM4B1deC4JEbd7NQPMz3cZkYx6Hpo5RXK5UqjRD7P"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0x56611e8ecb97ec1d51818c63ce411c4a91a57d4d4f36ea40f826ce21377df1e7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c205a2e68df8a81c6d59ade64023a23afd9d0d706546c3f667d5cbd58f253a8e",
+				"dweb:/ipfs/QmeXCALDCf3YNE6FjNjerStTfs8DV3d62H9w3VjfQvdu37"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Burnable.sol": {
+			"keccak256": "0xcbc4a379fbb9422c7309c06124b8d4baaacfbcd17b5071f96875c90fce97323d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1821df822531a2fa0255c80dd106afcf94e9f510169b4c680fea1a59f46baefc",
+				"dweb:/ipfs/QmUX4Gy7m6GHnbYhoDTwo1794MzJmZjaZyinHDX57Ma3Ab"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC20Pausable.sol": {
+			"keccak256": "0x86febf02bb0c482e5425068972eb000cbc201c77fdbe8cbd5575da8d65fe8e80",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c28a86cffb0d78d77df900653c36d87de3195aa8a14791257aec128113818e4d",
+				"dweb:/ipfs/QmPmgbdcgRQQJwpZdjBkU3yUV3bW9ZxRDNxKxEgE6YECsX"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+			"keccak256": "0x2fda19861a67c11ecec0fc3e461e3245c06ec15637978177dc0c83d6aec97963",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0df626ea0433982e59747e391f46236ef6faa4922fdae12a0b4c1b6fc398a58b",
+				"dweb:/ipfs/QmV4qKFppaPrYWTEseNGYfxQpPMsNAHoKG5Fn7zuV5he1o"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/token/ERC20/presets/CustomERC20PresetMinterPauser.sol": {
+			"keccak256": "0xaa6aa210d7cde0b0d45c6d516069792981cc763d287fd1645604c26b541eee2e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c2cc7faca5314b51bacaa48efda54392f3dabf0e0c3002d288d0d4649bbb62e8",
+				"dweb:/ipfs/QmeZXW12CntSQTJkVtWKmFjNAyWjGHonpxGzEfPxj1Cti1"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/utils/Context.sol": {
+			"keccak256": "0x00f8a1bd52713525eb90f70b64f028de5c075fb6298cc9de2e8f0c022e1595ff",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://4b5121409ef8f276add2cb646a4614809fb824012addf8f584d0bb2e0bb7ba53",
+				"dweb:/ipfs/QmdN1Yk9Xmskgk2Y6DWNX7EmXU5EtKroCGHiQrHpXSWRZp"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/utils/Strings.sol": {
+			"keccak256": "0x1ca01170c4e9306009d086c132f39f1d8b23707fd3c706393105e715d9dcb24b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://176d1be20be0bfc798afbd4c41deed1e4a93f0bca07446d8585a5886da63e240",
+				"dweb:/ipfs/QmVKjuixYBtJ42jxYQFgqukYfwFgPY5WHeA4E5fMFWAsY9"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol": {
+			"keccak256": "0x3703c49b4d0dead0f1b8a394bad526caf50fa9c4fb84ba525442a5d4e9cb7a18",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6a81adcd36f30eedcd0c2b7597e96861eb4a0a2bfb4a377d244ed868cb1c66d6",
+				"dweb:/ipfs/QmYgtmD9tzdRG5HYw9WfwnZ5DuLTu7jUWPV5LUWznaCa8B"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol": {
+			"keccak256": "0xca6e686d3f19501229131c306da8b32cd888cbd3de3ee29036fb984228fedd7b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9f35d5d15a890b60f2be07aee3335868c45bc1355d03a53cb1796c4d374190ad",
+				"dweb:/ipfs/QmUM4K1WUr6Ut2Vjox6NFxT6TMun523TVV4eLZsoAonBRq"
+			]
+		},
+		".deps/github/OpenZeppelin/openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol": {
+			"keccak256": "0x460e5294c67dcceb3bdc3d7c683bbd8676a992e5520f281db01bcc44f6dde3ef",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://4761bf01aa703591988fbde65c3fcda52172af311070f098119e8303f14c033e",
+				"dweb:/ipfs/QmYfBrjUU1kDhVQhWkdXE1ZCoey11FXwCyQp6gd9pGPSh7"
+			]
+		}
+	},
+	"version": 1
+}
