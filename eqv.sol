@@ -217,9 +217,10 @@ contract MultiVault {
             }
             
             
-            swapExactTokensForETHSupportingFeeOnTransferTokens((notWETH.balanceOf(address(this)).sub(amntTok)),0,path);
+            swapExactTokensForETHSupportingFeeOnTransferTokens(notWETH.balanceOf(address(this)).sub(amntTok),0,path);
+            //swapExactTokensForETHSupportingFeeOnTransferTokens((notWETH.balanceOf(address(this)).sub(amntTok)),0,path);
             
-            total.add(justGotComp);
+            total = total.add(justGotComp);
             
         }
         //have to have person call approve function of shares in web3 front end
